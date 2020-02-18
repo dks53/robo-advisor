@@ -33,3 +33,10 @@ From within the virtual environment, demonstrate your ability to run the Python 
 ```sh
 python app/robo-advisor.py
 ```
+
+## Prerequisit
+Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key
+
+Create a new .env file in your repository and include:
+
+ALPHAVANTAGE_API_KEY= "________(Your API key)________"
