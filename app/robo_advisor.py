@@ -18,39 +18,70 @@ def to_usd(my_price):
     Returns: $4,000.44
     """
 
-print("REQUESTING SOME DATA FROM THE INTERNET...")
-
 # variables in the URL
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "OOPS") # X55IRTRY70EOOESP
-#symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
-symbol = "MSFT"
+symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
+#symbol = "MSFT"
 
+# preliminary validation checking if input is <4 characters and contains only alphabets
+if len(symbol) < 5 and symbol.isalpha():
+    print("")
+    print("*******************************************************")
+    print(f"Looking up the internet for {symbol} stock data ...")
+    print("*******************************************************")
+    print("")
+else:
+    print("Are you sure you entered the correct symbol? Try again!")
+    exit()
+
+# loads URL to be looked up for data
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}"
+print("--------------------------------------------------------------------------------------------------------")
 print("URL:", request_url)
+print("--------------------------------------------------------------------------------------------------------")
+print("")
 
-response = requests.get(request_url)
+response = requests.get(request_url) # checks whether the request for the URL succeeded or not
 
-# handle response errors:
+#  secondary validation to see if the stock symbol exists ~ handle response errors:
 if "Error Message" in response.text:
     print("OOPS, couldn't find that symbol! Please try again")
     exit()
 
 parsed_response = json.loads(response.text)
 
-# variables holding latest data
+# variable holding latest refreshed date
 latest_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
 tsd = parsed_response["Time Series (Daily)"]
-print(tsd)
+#print(tsd)
 
+# storing the most recent date in a variable
 dates = list(tsd.keys())
-print(dates)
-
 latest_day = dates[0]
-latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
-latest_high = parsed_response["Time Series (Daily)"][latest_day]["2. high"]
-latest_low = parsed_response["Time Series (Daily)"][latest_day]["3. low"]
 
+# closing price for latest date
+latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+
+# maximum daily high in the last 100 days
+high_prices = []
+
+for date in dates:
+    day_high = parsed_response["Time Series (Daily)"][date]["2. high"]
+    high_prices.append(day_high)
+
+recent_high = max(high_prices)
+
+# maximum daily low in the last 100 days
+low_prices = []
+
+for date in dates:
+    day_low = parsed_response["Time Series (Daily)"][date]["3. low"]
+    low_prices.append(day_low)
+    
+recent_low = min(low_prices)
+
+# print results ------------------------------------------------------------------
 
 print("------------------------------")
 print("SELECTED SYMBOL: ", symbol)
@@ -60,15 +91,18 @@ print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: 2018-02-20 02:00pm")
 print("------------------------------")
 
-print(f"LATEST DAY: {latest_refreshed}")
-print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
-print(f"RECENT HIGH: {to_usd(float(latest_high))}")
-print(f"RECENT LOW: {to_usd(float(latest_low))}")
+print(f"LATEST DAY   : {latest_refreshed}")
+print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
+print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
+print(f"RECENT LOW   : {to_usd(float(recent_low))}")
 print("------------------------------")
 
-print("RECOMMENDATION: BUY!")
+print("RECOMMENDATION : BUY!")
+print("")
 print("RECOMMENDATION REASON: TODO")
+print("")
 
-print("------------------------------")
-print("HAPPY INVESTING!")
-print("------------------------------")
+print("******************************")
+print("       HAPPY INVESTING!")
+print("******************************")
+print("")
