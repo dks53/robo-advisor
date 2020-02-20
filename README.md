@@ -1,4 +1,4 @@
-# Darshil Shah ~ robo-advisor-project
+# Darshil Shah : robo-advisor-project
 
 This document walks you (the user) through this robo-advisor project. It will help you setup your environment to run the code successfully. If you have any questions, you can reach out to project lead dks53@georgetown.edu
 
