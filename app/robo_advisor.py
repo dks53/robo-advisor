@@ -9,7 +9,7 @@ from datetime import datetime
 load_dotenv()
 
 def to_usd(my_price):
-    return f"${my_price:,.2f}" #> $12,000.71
+    return f"$ {my_price:,.2f}" #> $12,000.71
     """
     Converts a numeric value to usd-formatted string, for printing and display purposes.
     Source: https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/datatypes/numbers.md#formatting-as-currency
@@ -27,7 +27,7 @@ symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would lik
 if len(symbol) < 5 and symbol.isalpha():
     print("")
     print("*******************************************************")
-    print(f"Looking up the internet for {symbol} stock data ...")
+    print(f"Looking up the internet for {symbol.upper()} stock data ...")
     print("*******************************************************")
     print("")
 else:
@@ -50,6 +50,11 @@ if "Error Message" in response.text:
 
 parsed_response = json.loads(response.text)
 
+# Date/time of request
+DateTime = datetime.now()
+
+request_at = (f"{DateTime.year}-{DateTime.month}-{DateTime.day} {DateTime.hour}:{DateTime.minute}:{DateTime.second}")
+
 # variable holding latest refreshed date
 latest_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
@@ -63,7 +68,7 @@ latest_day = dates[0]
 # closing price for latest date
 latest_close = tsd[latest_day]["4. close"]
 
-# maximum daily high/low in the last 100 days
+# maximum/minimum daily high/low in the last 100 days
 high_prices = []
 low_prices = []
 
@@ -78,26 +83,26 @@ recent_low = min(low_prices)
     
 # print results ------------------------------------------------------------------
 
-print("------------------------------")
-print("SELECTED SYMBOL: ", symbol)
-print("------------------------------")
+print("--------------------------------")
+print("SELECTED SYMBOL: ", symbol.upper())
+print("--------------------------------")
 
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")
-print("------------------------------")
+print(f"REQUEST AT: {request_at}")
+print("--------------------------------")
 
 print(f"LATEST DAY   : {latest_refreshed}")
 print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
 print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
 print(f"RECENT LOW   : {to_usd(float(recent_low))}")
-print("------------------------------")
+print("--------------------------------")
 
 print("RECOMMENDATION : BUY!")
 print("")
 print("RECOMMENDATION REASON: TODO")
 print("")
 
-print("******************************")
+print("********************************")
 print("       HAPPY INVESTING!")
-print("******************************")
+print("********************************")
 print("")
