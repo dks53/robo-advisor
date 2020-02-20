@@ -61,26 +61,21 @@ dates = list(tsd.keys())
 latest_day = dates[0]
 
 # closing price for latest date
-latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+latest_close = tsd[latest_day]["4. close"]
 
-# maximum daily high in the last 100 days
+# maximum daily high/low in the last 100 days
 high_prices = []
-
-for date in dates:
-    day_high = parsed_response["Time Series (Daily)"][date]["2. high"]
-    high_prices.append(day_high)
-
-recent_high = max(high_prices)
-
-# maximum daily low in the last 100 days
 low_prices = []
 
 for date in dates:
-    day_low = parsed_response["Time Series (Daily)"][date]["3. low"]
+    day_high = tsd[date]["2. high"]
+    high_prices.append(day_high)
+    day_low = tsd[date]["3. low"]
     low_prices.append(day_low)
-    
-recent_low = min(low_prices)
 
+recent_high = max(high_prices)
+recent_low = min(low_prices)
+    
 # print results ------------------------------------------------------------------
 
 print("------------------------------")
