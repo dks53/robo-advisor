@@ -29,10 +29,6 @@ request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&sym
 print("URL:", request_url)
 
 response = requests.get(request_url)
-#print(type(response))
-#print(response.status_code)
-#print(type(response.text)) #>string
-
 
 # handle response errors:
 if "Error Message" in response.text:
@@ -40,18 +36,21 @@ if "Error Message" in response.text:
     exit()
 
 parsed_response = json.loads(response.text)
-#print(type(parsed_response)) #> dict
-#print(parsed_response)
 
-#breakpoint()
-
+# variables holding latest data
 latest_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-latest_close = parsed_response["Time Series (Daily)"]["2020-02-20"]["4. close"]
 
+tsd = parsed_response["Time Series (Daily)"]
+print(tsd)
 
+dates = list(tsd.keys())
+print(dates)
 
-# ----------------------------------------------
-# ----------------------------------------------
+latest_day = dates[0]
+latest_close = parsed_response["Time Series (Daily)"][latest_day]["4. close"]
+latest_high = parsed_response["Time Series (Daily)"][latest_day]["2. high"]
+latest_low = parsed_response["Time Series (Daily)"][latest_day]["3. low"]
+
 
 print("------------------------------")
 print("SELECTED SYMBOL: ", symbol)
@@ -63,8 +62,8 @@ print("------------------------------")
 
 print(f"LATEST DAY: {latest_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(latest_close))}")
-print("RECENT HIGH: $101,000.00")
-print("RECENT LOW: $99,000.00")
+print(f"RECENT HIGH: {to_usd(float(latest_high))}")
+print(f"RECENT LOW: {to_usd(float(latest_low))}")
 print("------------------------------")
 
 print("RECOMMENDATION: BUY!")
