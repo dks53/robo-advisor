@@ -5,6 +5,7 @@ import json
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+import csv
 
 load_dotenv()
 
@@ -81,6 +82,10 @@ for date in dates:
 recent_high = max(high_prices)
 recent_low = min(low_prices)
 
+# --------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------
+
 # recommendation algorithm
 
 recommendation = "N/A"
@@ -95,6 +100,29 @@ recommendation_reason = "N/A"
 #else:
 #    recommendation = "Don't buy!"
 #    recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
+
+# --------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------
+
+#csv_file_path = "data/prices.csv" # a relative filepath
+csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
+csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
+
+with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+    writer.writeheader() # uses fieldnames set above
+
+    # loop through all data to write into different rows
+    for date in dates:
+        writer.writerow({
+            "timestamp": date,
+            "open": tsd[date]["1. open"],
+            "high": tsd[date]["2. high"],
+            "low": tsd[date]["3. low"],
+            "close": tsd[date]["4. close"],
+            "volume": tsd[date]["5. volume"],
+        })
     
 # print results ------------------------------------------------------------------
 
@@ -116,7 +144,13 @@ print("")
 print(f"RECOMMENDATION REASON: {recommendation_reason}")
 print("")
 
+print("--------------------------------")
+print(F"WRITING DATA TO CSV: {csv_file_path}...")
+print("--------------------------------")
+
+print("")
 print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
 print("")
+
