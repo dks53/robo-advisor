@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 import csv
+import plotly
+import plotly.graph_objs as go
 
 load_dotenv()
 
@@ -105,7 +107,6 @@ recommendation_reason = "N/A"
 # --------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------
 
-#csv_file_path = "data/prices.csv" # a relative filepath
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{symbol.upper()}_prices.csv")
 csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 
@@ -123,7 +124,22 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
             "close": tsd[date]["4. close"],
             "volume": tsd[date]["5. volume"],
         })
-    
+
+# plot graph of stock
+
+x=[]
+y=[]
+for date in dates:
+    x.append(date)
+    y.append(tsd[date]["4. close"])
+
+plotly.offline.plot({
+    "data": [go.Scatter(x=x, y=y)],
+    "layout": go.Layout(title=f"Daily Closing Price of {symbol.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
+}, auto_open=True, )
+
+## TODO: save plot in the data folder with appropriate name. right now it saves as temp-plot.html 
+
 # print results ------------------------------------------------------------------
 
 print("--------------------------------")
@@ -148,10 +164,12 @@ print("--------------------------------")
 print("WRITING DATA TO CSV FILE...")
 print(csv_file_path)
 print("--------------------------------")
+print(f"PLOTTING GRAPH FOR {symbol.upper()} STOCK")
+print("--------------------------------")
+
 
 print("")
 print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
 print("")
-
