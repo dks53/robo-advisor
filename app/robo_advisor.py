@@ -136,9 +136,7 @@ for date in dates:
 plotly.offline.plot({
     "data": [go.Scatter(x=x, y=y)],
     "layout": go.Layout(title=f"Daily Closing Price of {symbol.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
-}, auto_open=True, )
-
-## TODO: save plot in the data folder with appropriate name. right now it saves as temp-plot.html 
+}, filename=f"{symbol.upper()}_chart.html", auto_open=True)
 
 # print results ------------------------------------------------------------------
 
