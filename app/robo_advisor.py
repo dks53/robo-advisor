@@ -80,6 +80,21 @@ for date in dates:
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
+
+# recommendation algorithm
+
+recommendation = "N/A"
+recommendation_reason = "N/A"
+
+#if latest_close < (recent_low * 1.2):
+#    recommendation = "Buy!"
+#    recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
+#elif (recent_high - recent_low) > 50 :
+#    recommendation = "Buy!"
+#    recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
+#else:
+#    recommendation = "Don't buy!"
+#    recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
     
 # print results ------------------------------------------------------------------
 
@@ -96,10 +111,9 @@ print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
 print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
 print(f"RECENT LOW   : {to_usd(float(recent_low))}")
 print("--------------------------------")
-
-print("RECOMMENDATION : BUY!")
+print(f"RECOMMENDATION : {recommendation}")
 print("")
-print("RECOMMENDATION REASON: TODO")
+print(f"RECOMMENDATION REASON: {recommendation_reason}")
 print("")
 
 print("********************************")
