@@ -23,6 +23,7 @@ def to_usd(my_price):
 
 # variables in the URL
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "OOPS") # X55IRTRY70EOOESP
+
 symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
 #symbol = "MSFT"
 
@@ -93,15 +94,19 @@ recent_low = min(low_prices)
 recommendation = "N/A"
 recommendation_reason = "N/A"
 
-#if latest_close < (recent_low * 1.2):
-#    recommendation = "Buy!"
-#    recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
-#elif (recent_high - recent_low) > 50 :
-#    recommendation = "Buy!"
-#    recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
-#else:
-#    recommendation = "Don't buy!"
-#    recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
+recent_high = float(recent_high)
+recent_low = float(recent_low)
+latest_close = float(latest_close)
+
+if latest_close < (recent_low * 1.2):
+    recommendation = "Buy!"
+    recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
+elif (recent_high - recent_low) > 50:
+    recommendation = "Buy!"
+    recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
+else:
+    recommendation = "Don't buy!"
+    recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
 
 # --------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------
@@ -156,7 +161,6 @@ print("--------------------------------")
 print(f"RECOMMENDATION : {recommendation}")
 print("")
 print(f"RECOMMENDATION REASON: {recommendation_reason}")
-print("")
 
 print("--------------------------------")
 print("WRITING DATA TO CSV FILE...")
