@@ -174,33 +174,6 @@ for i in range(0,len(selected_symbols)):
         "layout": go.Layout(title=f"Daily Closing Price of {ticker.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
     }, filename=plot_file_path, auto_open=True)
 
-    # calculation for percentage change in closing price of stock on latest day and the day before
-    
-    price_change = abs((float(latest_close)-float(yesterday_close))/float(yesterday_close))
-    print(price_change)
-    price_change_percent = round((price_change * 100),2)
-
-    if (price_change > 0.05):
-        SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
-        MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
-        client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
-
-        subject = f"{symbol} Stock Movement Alert"
-
-        html_content = f"The {ticker.upper()} stock changed by {price_change_percent}%"
-        
-        print("HTML:", html_content)
-
-        message = Mail(from_email=MY_ADDRESS, to_emails=MY_ADDRESS, subject=subject, html_content=html_content)
-
-        try:
-            response = client.send(message)
-
-        except Exception as e:
-            print("OOPS", e.message)
-    else:
-        break
-
     # print results ------------------------------------------------------------------
 
     print("")
@@ -227,9 +200,41 @@ for i in range(0,len(selected_symbols)):
     print("--------------------------------")
     print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
     print("--------------------------------")
-    print("")
+
+    # calculation for percentage change in closing price of stock on latest day and the day before
+    
+    price_change = (float(latest_close)-float(yesterday_close))/float(yesterday_close)
+    print(price_change)
+    price_change_percent = round((price_change * 100),2)
+    print(price_change_percent)
+    price_change = abs(price_change)
+    print(price_change)
+
+
+    # condition to determine whether or not to send the email. If change is > 5%, send email, otherwise break.
+    if (price_change > 0.05):
+        SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
+        MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
+        client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
+
+        subject = f"{symbol} Stock Movement Alert"
+
+        html_content = f"The {ticker.upper()} stock changed by {price_change_percent}% since yesterday"
+        
+        message = Mail(from_email=MY_ADDRESS, to_emails=MY_ADDRESS, subject=subject, html_content=html_content)
+
+        try:
+            response = client.send(message)
+
+        except Exception as e:
+            print("OOPS", e.message)
+    else:
+        print("")
+
 
 print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
 print("")
+
+
