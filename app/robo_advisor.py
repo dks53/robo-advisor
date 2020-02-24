@@ -24,11 +24,11 @@ def to_usd(my_price):
 # variables in the URL
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "OOPS") # X55IRTRY70EOOESP
 
-selected_symbols = []
-selected_response = []
+selected_symbols = [] # list of the symbols the user wishes to learn about
+selected_response = [] # list consisting of all the data about a given symbol from the database
 
 while True:
-    symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
+    symbol = input("Please enter the ticker symbol (e.g.: AAPL) for a stock you would like to learn about. Or, if you are done entering the stocks, hit 'enter': ")
     #symbol = "MSFT"
 
     if symbol == "":
@@ -65,7 +65,10 @@ while True:
 
         else:
             print("Are you sure you entered the correct symbol? Try again!")
-            
+
+      
+print("")
+print(f"Your selected stocks: {selected_symbols}")
 print(selected_symbols)
 
 #breakpoint()
@@ -158,6 +161,7 @@ for i in range(0,len(selected_symbols)):
 
     # print results ------------------------------------------------------------------
 
+    print("")
     print("--------------------------------")
     print("SELECTED SYMBOL: ", ticker.upper())
     print("--------------------------------")
@@ -181,9 +185,9 @@ for i in range(0,len(selected_symbols)):
     print("--------------------------------")
     print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
     print("--------------------------------")
-
     print("")
-    print("********************************")
-    print("       HAPPY INVESTING!")
-    print("********************************")
-    print("")
+print("********************************")
+print("       HAPPY INVESTING!")
+print("********************************")
+print("")
+ 

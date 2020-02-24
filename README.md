@@ -18,9 +18,11 @@ The system will prompt you to input a stock symbol (e.g. "DIS", "MSFT", "AAPL", 
 
 The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database.
 
+Once validations are completed, the program will run the necessary calculations and create an output.
+
 ### Output
 
-The program will then provide the following output:
+The program will provide the following output:
 
 ```sh
 --------------------------------
@@ -38,17 +40,11 @@ RECOMMENDATION : Buy!
 
 RECOMMENDATION REASON: (Reason)
 --------------------------------
-WRITING DATA TO CSV FILE...
-app/../data/DIS_prices.csv
---------------------------------
-PLOTTING GRAPH FOR DIS STOCK
---------------------------------
 
-********************************
-       HAPPY INVESTING!
-********************************
 ```
+In addition to the summary and recommendation, the program will write a csv file containing the historical data of the stock for the last 100 days. This csv file will be called "symbol_prices.csv" (for e.g.: MSFT_prices.csv) and can be found within the "data" folder of your repository. 
 
+In addition to writing the historical stock prices to a CSV file, your program should also display a line graph of the stock prices over time. This graph should automaticlly open on your web browser, and can also be found within the "data" folder of your repository.
 
 ## Setup
 Use GitHub Desktop software or the command-line to download or "clone" the repository onto your computer. Choose a familiar download location like the Desktop.
