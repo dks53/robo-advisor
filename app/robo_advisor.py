@@ -24,147 +24,166 @@ def to_usd(my_price):
 # variables in the URL
 API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "OOPS") # X55IRTRY70EOOESP
 
-symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
-#symbol = "MSFT"
+selected_symbols = []
+selected_response = []
 
-# preliminary validation checking if input is <4 characters and contains only alphabets
-if len(symbol) < 5 and symbol.isalpha():
-    print("")
-    print("*******************************************************")
-    print(f"Looking up the internet for {symbol.upper()} stock data ...")
-    print("*******************************************************")
-    print("")
-else:
-    print("Are you sure you entered the correct symbol? Try again!")
-    exit()
+while True:
+    symbol = input("Please enter the ticker (e.g.: AAPL) for the stock you would like to learn about: ")
+    #symbol = "MSFT"
 
-# loads URL to be looked up for data
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}"
-print("--------------------------------------------------------------------------------------------------------")
-print("URL:", request_url)
-print("--------------------------------------------------------------------------------------------------------")
-print("")
+    if symbol == "":
+        break
+    else:
+        # preliminary validation checking if input is <4 characters and contains only alphabets
+        if len(symbol) < 5 and symbol.isalpha():
+            print("")
+            print("*******************************************************")
+            print(f"Looking up the internet for {symbol.upper()} stock data ...")
+            print("*******************************************************")
+            print("")
 
-response = requests.get(request_url) # checks whether the request for the URL succeeded or not
+            # loads URL to be looked up for data
+            request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}"
+            #print("--------------------------------------------------------------------------------------------------------")
+            #print("URL:", request_url)
+            #print("--------------------------------------------------------------------------------------------------------")
+            #print("")
 
-#  secondary validation to see if the stock symbol exists ~ handle response errors:
-if "Error Message" in response.text:
-    print("OOPS, couldn't find that symbol! Please try again")
-    exit()
+            response = requests.get(request_url) # checks whether the request for the URL succeeded or not
 
-parsed_response = json.loads(response.text)
+            #  secondary validation to see if the stock symbol exists ~ handle response errors:
+            if "Error Message" in response.text:
+                print("OOPS, couldn't find that symbol! Please try again")
+                
+            parsed_response = json.loads(response.text)
 
-# Date/time of request
-DateTime = datetime.now()
+            selected_symbols.append(symbol)
+            selected_response.append(parsed_response)
 
-request_at = (f"{DateTime.year}-{DateTime.month}-{DateTime.day} {DateTime.hour}:{DateTime.minute}:{DateTime.second}")
+            #print(selected_symbols)
+            #print(selected_response)
 
-# variable holding latest refreshed date
-latest_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+        else:
+            print("Are you sure you entered the correct symbol? Try again!")
+            
+print(selected_symbols)
 
-tsd = parsed_response["Time Series (Daily)"]
-#print(tsd)
+#breakpoint()
 
-# storing the most recent date in a variable
-dates = list(tsd.keys())
-latest_day = dates[0]
+for i in range(0,len(selected_symbols)):
+    ticker = selected_symbols[i]
+    # Date/time of request
+    
+    DateTime = datetime.now()
 
-# closing price for latest date
-latest_close = tsd[latest_day]["4. close"]
+    request_at = (f"{DateTime.year}-{DateTime.month}-{DateTime.day} {DateTime.hour}:{DateTime.minute}:{DateTime.second}")
 
-# maximum/minimum daily high/low in the last 100 days
-high_prices = []
-low_prices = []
+    # variable holding latest refreshed date
+    latest_refreshed = selected_response[i]["Meta Data"]["3. Last Refreshed"]
 
-for date in dates:
-    day_high = tsd[date]["2. high"]
-    high_prices.append(day_high)
-    day_low = tsd[date]["3. low"]
-    low_prices.append(day_low)
+    tsd = selected_response[i]["Time Series (Daily)"]
+    #print(tsd)
 
-recent_high = max(high_prices)
-recent_low = min(low_prices)
+    # storing the most recent date in a variable
+    dates = list(tsd.keys())
+    latest_day = dates[0]
 
-# recommendation algorithm
+    # closing price for latest date
+    latest_close = tsd[latest_day]["4. close"]
 
-recommendation = "N/A"
-recommendation_reason = "N/A"
+    # maximum/minimum daily high/low in the last 100 days
+    high_prices = []
+    low_prices = []
 
-recent_high = float(recent_high)
-recent_low = float(recent_low)
-latest_close = float(latest_close)
-
-if latest_close < (recent_low * 1.2):
-    recommendation = "Buy!"
-    recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
-elif (recent_high - recent_low) > 50:
-    recommendation = "Buy!"
-    recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
-else:
-    recommendation = "Don't buy!"
-    recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
-
-# writing data to a csv file
-
-csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{symbol.upper()}_prices.csv")
-csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
-
-with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-    writer.writeheader() # uses fieldnames set above
-
-    # loop through all data to write into different rows
     for date in dates:
-        writer.writerow({
-            "timestamp": date,
-            "open": tsd[date]["1. open"],
-            "high": tsd[date]["2. high"],
-            "low": tsd[date]["3. low"],
-            "close": tsd[date]["4. close"],
-            "volume": tsd[date]["5. volume"],
-        })
+        day_high = tsd[date]["2. high"]
+        high_prices.append(day_high)
+        day_low = tsd[date]["3. low"]
+        low_prices.append(day_low)
 
-# plot graph of stock
+    recent_high = max(high_prices)
+    recent_low = min(low_prices)
 
-x=[]
-y=[]
-for date in dates:
-    x.append(date)
-    y.append(tsd[date]["4. close"])
+    # recommendation algorithm
 
-plotly.offline.plot({
-    "data": [go.Scatter(x=x, y=y)],
-    "layout": go.Layout(title=f"Daily Closing Price of {symbol.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
-}, filename=f"{symbol.upper()}_chart.html", auto_open=True)
+    recommendation = "N/A"
+    recommendation_reason = "N/A"
 
-# print results ------------------------------------------------------------------
+    recent_high = float(recent_high)
+    recent_low = float(recent_low)
+    latest_close = float(latest_close)
 
-print("--------------------------------")
-print("SELECTED SYMBOL: ", symbol.upper())
-print("--------------------------------")
+    if latest_close < (recent_low * 1.2):
+        recommendation = "Buy!"
+        recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
+    elif (recent_high - recent_low) > 50:
+        recommendation = "Buy!"
+        recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
+    else:
+        recommendation = "Don't buy!"
+        recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
 
-print("REQUESTING STOCK MARKET DATA...")
-print(f"REQUEST AT: {request_at}")
-print("--------------------------------")
+    # writing data to a csv file
 
-print(f"LATEST DAY   : {latest_refreshed}")
-print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
-print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
-print(f"RECENT LOW   : {to_usd(float(recent_low))}")
-print("--------------------------------")
-print(f"RECOMMENDATION : {recommendation}")
-print("")
-print(f"RECOMMENDATION REASON: {recommendation_reason}")
+    csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{ticker.upper()}_prices.csv")
+    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 
-print("--------------------------------")
-print("WRITING DATA TO CSV FILE...")
-print(csv_file_path)
-print("--------------------------------")
-print(f"PLOTTING GRAPH FOR {symbol.upper()} STOCK")
-print("--------------------------------")
+    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader() # uses fieldnames set above
 
-print("")
-print("********************************")
-print("       HAPPY INVESTING!")
-print("********************************")
-print("")
+        # loop through all data to write into different rows
+        for date in dates:
+            writer.writerow({
+                "timestamp": date,
+                "open": tsd[date]["1. open"],
+                "high": tsd[date]["2. high"],
+                "low": tsd[date]["3. low"],
+                "close": tsd[date]["4. close"],
+                "volume": tsd[date]["5. volume"],
+            })
+
+    # plot graph of stock
+
+    x=[]
+    y=[]
+    for date in dates:
+        x.append(date)
+        y.append(tsd[date]["4. close"])
+
+    plotly.offline.plot({
+        "data": [go.Scatter(x=x, y=y)],
+        "layout": go.Layout(title=f"Daily Closing Price of {ticker.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
+    }, filename=f"{ticker.upper()}_chart.html", auto_open=True)
+
+    # print results ------------------------------------------------------------------
+
+    print("--------------------------------")
+    print("SELECTED SYMBOL: ", ticker.upper())
+    print("--------------------------------")
+
+    print("REQUESTING STOCK MARKET DATA...")
+    print(f"REQUEST AT: {request_at}")
+    print("--------------------------------")
+
+    print(f"LATEST DAY   : {latest_refreshed}")
+    print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
+    print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
+    print(f"RECENT LOW   : {to_usd(float(recent_low))}")
+    print("--------------------------------")
+    print(f"RECOMMENDATION : {recommendation}")
+    print("")
+    print(f"RECOMMENDATION REASON: {recommendation_reason}")
+
+    print("--------------------------------")
+    print("WRITING DATA TO CSV FILE...")
+    print(csv_file_path)
+    print("--------------------------------")
+    print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
+    print("--------------------------------")
+
+    print("")
+    print("********************************")
+    print("       HAPPY INVESTING!")
+    print("********************************")
+    print("")
