@@ -8,6 +8,10 @@ from datetime import datetime
 import csv
 import plotly
 import plotly.graph_objs as go
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+## ----------------------------------------------------------------------------------------------
 
 load_dotenv()
 
@@ -96,9 +100,11 @@ for i in range(0,len(selected_symbols)):
     # storing the most recent date in a variable
     dates = list(tsd.keys())
     latest_day = dates[0]
+    yesterday = dates[1]
 
     # closing price for latest date
     latest_close = tsd[latest_day]["4. close"]
+    yesterday_close = tsd[yesterday]["4. close"]
 
     # maximum/minimum daily high/low in the last 100 days
     high_prices = []
@@ -161,10 +167,39 @@ for i in range(0,len(selected_symbols)):
         x.append(date)
         y.append(tsd[date]["4. close"])
 
+    plot_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{ticker.upper()}_chart.html")
+
     plotly.offline.plot({
         "data": [go.Scatter(x=x, y=y)],
         "layout": go.Layout(title=f"Daily Closing Price of {ticker.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
-    }, filename=f"{ticker.upper()}_chart.html", auto_open=True)
+    }, filename=plot_file_path, auto_open=True)
+
+    # calculation for percentage change in closing price of stock on latest day and the day before
+    
+    price_change = abs((float(latest_close)-float(yesterday_close))/float(yesterday_close))
+    print(price_change)
+    price_change_percent = round((price_change * 100),2)
+
+    if (price_change > 0.05):
+        SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
+        MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
+        client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
+
+        subject = f"{symbol} Stock Movement Alert"
+
+        html_content = f"The {ticker.upper()} stock changed by {price_change_percent}%"
+        
+        print("HTML:", html_content)
+
+        message = Mail(from_email=MY_ADDRESS, to_emails=MY_ADDRESS, subject=subject, html_content=html_content)
+
+        try:
+            response = client.send(message)
+
+        except Exception as e:
+            print("OOPS", e.message)
+    else:
+        break
 
     # print results ------------------------------------------------------------------
 
