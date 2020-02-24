@@ -19,8 +19,9 @@ The system will prompt you to input a stock symbol (e.g. "DIS", "MSFT", "AAPL", 
 ### Data Validation
 
 The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database.
-
+> See "Prerequisits" in order to gain access to the database.
 Once validations are completed, the program will run the necessary calculations and create an output.
+
 
 ### Information Output
 
@@ -65,7 +66,7 @@ After cloning the repo, navigate there from the command-line:
 cd ~/Desktop/robo-advisor/app
 ```
 
-## Prerequisit
+## Prerequisits
 Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key
 
 Create a new ".env" file in your repository and include:
@@ -89,7 +90,7 @@ From within the virtual environment, install the required packages specified in 
 pip install -r requirements.txt
 ```
 
-From within the virtual environment, demonstrate your ability to run the Python script from the command-line:
+Once you have the entire program set-up, from within the virtual environment, demonstrate your ability to run the Python script from the command-line:
 
 ```sh
 python app/robo-advisor.py
