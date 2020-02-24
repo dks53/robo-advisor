@@ -44,7 +44,7 @@ RECOMMENDATION REASON: (Reason)
 --------------------------------
 
 ```
-In addition to the summary and recommendation, the program will write a csv file containing the historical data of the stock for the last 100 days. This csv file will be called "symbol_prices.csv" (for e.g.: MSFT_prices.csv) and can be found within the "data" folder of your repository. 
+In addition to the summary and recommendation, the program will write a csv file containing the historical data of the stock for the last 100 days. This csv file will be called "symbol_prices.csv" (for e.g.: DIS_prices.csv) and can be found within the "data" folder of your repository. 
 
 In addition to writing the historical stock prices to a CSV file, your program should also display a line graph of the stock prices over time. This graph should automaticlly open on your web browser, and can also be found within the "data" folder of your repository.
 
