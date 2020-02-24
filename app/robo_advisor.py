@@ -68,10 +68,16 @@ while True:
 
       
 print("")
-print(f"Your selected stocks: {selected_symbols}")
-print(selected_symbols)
 
-#breakpoint()
+# if statement to make sure the user entered at least one stock.
+if len(selected_symbols) == 0:
+    print("You didn't input a stock ticker/symbol. At least one symbol is required to run the code.")
+    print("")
+    exit()
+else:
+    print(f"Your selected stocks: {selected_symbols}")
+
+breakpoint()
 
 for i in range(0,len(selected_symbols)):
     ticker = selected_symbols[i]
@@ -192,4 +198,3 @@ print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
 print("")
- 
