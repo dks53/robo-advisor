@@ -12,13 +12,13 @@ Specifically, the system accepts one or more stock symbols as information inputs
 
 ## Functionality
 
-# Information Input Requirements
+### Information Input Requirements
 
 The system will prompt you to input a stock symbol (e.g. "DIS", "MSFT", "AAPL", etc.). It will then allow you to continue to input multiple symbols, one-by-one, for as many stocks you wish to explore. Once you have entered all the stocks you wish to learn about, go ahead and hit "Enter" or "Return".
 
 The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database.
 
-# Output
+### Output
 
 The program will then provide the following output:
 
