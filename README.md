@@ -18,10 +18,9 @@ The system will prompt you to input a stock symbol (e.g. "DIS", "MSFT", "AAPL", 
 
 ### Data Validation
 
-The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database.
-> See "Prerequisits" in order to gain access to the database.
-Once validations are completed, the program will run the necessary calculations and create an output.
+The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database. Once validations are completed, the program will run the necessary calculations and create an output.
 
+> See "Prerequisits" in order to gain access to the database.
 
 ### Information Output
 
