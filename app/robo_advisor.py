@@ -75,9 +75,9 @@ if len(selected_symbols) == 0:
     print("")
     exit()
 else:
-    print(f"Your selected stocks: {selected_symbols}")
+    print(f"Your entered: {selected_symbols}")
 
-breakpoint()
+#breakpoint()
 
 for i in range(0,len(selected_symbols)):
     ticker = selected_symbols[i]
