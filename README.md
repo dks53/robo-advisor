@@ -1,8 +1,53 @@
 # Darshil Shah : robo-advisor-project
 
-This document walks you (the user) through this robo-advisor project. It will help you setup your environment to run the code successfully. If you have any questions, you can reach out to project lead dks53@georgetown.edu
+This document walks you (the user) through this robo-advisor project. It will help you setup your environment to run the code successfully. 
 
 ## What does this code do?
+
+This is a financial planning business which helps customers make investment decisions.
+
+This is an automated tool that is built to provide you with stock trading recommendations.
+
+Specifically, the system accepts one or more stock symbols as information inputs, then it requests real live historical trading data from the internet, and finally provides a recommendation as to whether or not you should purchase the given stock(s).
+
+## Functionality
+
+# Information Input Requirements
+
+The system will prompt you to input a stock symbol (e.g. "DIS", "MSFT", "AAPL", etc.). It will then allow you to continue to input multiple symbols, one-by-one, for as many stocks you wish to explore. Once you have entered all the stocks you wish to learn about, go ahead and hit "Enter" or "Return".
+
+The program will then conduct a two-step validation to ensure that the symbol you entered was correct and that data for that stock is available in the database.
+
+# Output
+
+The program will then provide the following output:
+
+```sh
+--------------------------------
+SELECTED SYMBOL:  DIS
+--------------------------------
+REQUESTING STOCK MARKET DATA...
+REQUEST AT: 2020-2-24 11:36:38
+--------------------------------
+LATEST DAY   : 2020-02-24 11:36:02
+LATEST CLOSE : $ 131.95
+RECENT HIGH  : $ 153.41
+RECENT LOW   : $ 127.54
+--------------------------------
+RECOMMENDATION : Buy!
+
+RECOMMENDATION REASON: (Reason)
+--------------------------------
+WRITING DATA TO CSV FILE...
+app/../data/DIS_prices.csv
+--------------------------------
+PLOTTING GRAPH FOR DIS STOCK
+--------------------------------
+
+********************************
+       HAPPY INVESTING!
+********************************
+```
 
 
 ## Setup
@@ -13,6 +58,16 @@ After cloning the repo, navigate there from the command-line:
 ```sh
 cd ~/Desktop/robo-advisor/app
 ```
+
+## Prerequisit
+Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key
+
+Create a new ".env" file in your repository and include:
+
+```sh
+ALPHAVANTAGE_API_KEY = "________(Your API key)________"
+```
+
 ## Environment setup
 
 Create and activate a new Anaconda virtual environment:
@@ -33,10 +88,3 @@ From within the virtual environment, demonstrate your ability to run the Python 
 ```sh
 python app/robo-advisor.py
 ```
-
-## Prerequisit
-Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key
-
-Create a new .env file in your repository and include:
-
-ALPHAVANTAGE_API_KEY= "________(Your API key)________"
