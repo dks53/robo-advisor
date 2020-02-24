@@ -112,17 +112,18 @@ for i in range(0,len(selected_symbols)):
     recommendation = "N/A"
     recommendation_reason = "N/A"
 
+    # converting to float in order to do calculations
     recent_high = float(recent_high)
     recent_low = float(recent_low)
     latest_close = float(latest_close)
 
-    if latest_close < (recent_low * 1.2):
+    if latest_close < (recent_low * 1.2): # If the stock's latest closing price is less than 20% above its recent low, "Buy"
         recommendation = "Buy!"
-        recommendation_reason = "The stock's latest closing price is less than 20% above its recent low"
-    elif (recent_high - recent_low) > 50:
+        recommendation_reason = "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
+    elif (recent_high - recent_low) > 50: # If the difference between the recent high and recent low is greater than 50, "Buy"
         recommendation = "Buy!"
-        recommendation_reason = "There is a significant gap between the recent high and low which means that it's not a risky stock at the moment"
-    else:
+        recommendation_reason = "There is a significant gap between the recent high and low which means that it is not a volatile stock at the moment. It would be a safe investment"
+    else: # Else, "Don't Buy"
         recommendation = "Don't buy!"
         recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
 
@@ -186,6 +187,7 @@ for i in range(0,len(selected_symbols)):
     print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
     print("--------------------------------")
     print("")
+
 print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
