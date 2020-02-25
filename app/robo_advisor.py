@@ -204,12 +204,11 @@ for i in range(0,len(selected_symbols)):
     # calculation for percentage change in closing price of stock on latest day and the day before
     
     price_change = (float(latest_close)-float(yesterday_close))/float(yesterday_close)
-    print(price_change)
+    #print(price_change)
     price_change_percent = round((price_change * 100),2)
-    print(price_change_percent)
+    #print(price_change_percent)
     price_change = abs(price_change)
-    print(price_change)
-
+    #print(price_change)
 
     # condition to determine whether or not to send the email. If change is > 5%, send email, otherwise break.
     if (price_change > 0.05):
@@ -217,7 +216,7 @@ for i in range(0,len(selected_symbols)):
         MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
         client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
 
-        subject = f"{symbol} Stock Movement Alert"
+        subject = f"{symbol} Stock Price Movement Alert"
 
         html_content = f"The {ticker.upper()} stock changed by {price_change_percent}% since yesterday"
         

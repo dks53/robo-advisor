@@ -112,7 +112,7 @@ From within the virtual environment, install the required packages specified in 
 pip install -r requirements.txt
 ```
 
-From within a virtual environment, install sendgrid, if necessary:
+From within a virtual environment, install sendgrid:
 
 ```sh
 pip install sendgrid==6.0.5
