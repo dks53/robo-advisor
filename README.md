@@ -88,9 +88,11 @@ Store the API Key value in an environment variable called SENDGRID_API_KEY. Also
 
 ```sh
 SENDGRID_API_KEY = "________(Your API key)________" 
+
 example: SENDGRID_API_KEY = "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" 
 
 MY_EMAIL_ADDRESS = "________(Your email address)________" 
+
 example: MY_EMAIL_ADDRESS = "dks53@georgetown.edu" 
 
 ```
@@ -108,6 +110,12 @@ From within the virtual environment, install the required packages specified in 
 
 ```sh
 pip install -r requirements.txt
+```
+
+From within a virtual environment, install sendgrid, if necessary:
+
+```sh
+pip install sendgrid==6.0.5
 ```
 
 Once you have the entire program set-up, from within the virtual environment, demonstrate your ability to run the Python script from the command-line:
