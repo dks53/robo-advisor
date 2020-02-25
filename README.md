@@ -67,9 +67,9 @@ cd ~/Desktop/robo-advisor/app
 
 ## Prerequisits
 
-### Stock Data API
-
 First, create a new ".env" file in your repository.
+
+### Stock Data API
 
 Your program will need an API Key to issue requests to the AlphaVantage API. Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key. Once you have your API Key, add the following contents to your .env file and edit it to work with your API Key.
 
