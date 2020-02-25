@@ -66,12 +66,33 @@ cd ~/Desktop/robo-advisor/app
 ```
 
 ## Prerequisits
-Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key
 
-Create a new ".env" file in your repository and include:
+### Stock Data API
+
+First, create a new ".env" file in your repository.
+
+Your program will need an API Key to issue requests to the AlphaVantage API. Get your own API Key by visiting: https://www.alphavantage.co/support/#api-key. Once you have your API Key, add the following contents to your .env file and edit it to work with your API Key.
 
 ```sh
-ALPHAVANTAGE_API_KEY = "________(Your API key)________"
+ALPHAVANTAGE_API_KEY = "________(Your API key)________" 
+
+example: ALPHAVANTAGE_API_KEY = "X55IRTRY70EOOESP" 
+```
+### Email API
+
+First, sign up for a free account at: https://signup.sendgrid.com/
+Then click the link in a confirmation email to verify your account. 
+Then create an API Key with "full access" permissions at: https://app.sendgrid.com/settings/api_keys
+
+Store the API Key value in an environment variable called SENDGRID_API_KEY. Also set an environment variable called MY_EMAIL_ADDRESS to be the email address you just associated with your SendGrid account (e.g. "abc123@gmail.com").
+
+```sh
+SENDGRID_API_KEY = "________(Your API key)________" 
+example: SENDGRID_API_KEY = "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" 
+
+MY_EMAIL_ADDRESS = "________(Your email address)________" 
+example: MY_EMAIL_ADDRESS = "dks53@georgetown.edu" 
+
 ```
 
 ## Environment setup
