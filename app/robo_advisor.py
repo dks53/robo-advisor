@@ -213,14 +213,20 @@ for i in range(0,len(selected_symbols)):
     # condition to determine whether or not to send the email. If change is > 5%, send email, otherwise break.
     if (price_change > 0.05):
         SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
+        #print(SENDGRID_API_KEY)
         MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
+        #print(MY_ADDRESS)
         client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
 
         subject = f"{symbol} Stock Price Movement Alert"
 
         html_content = f"The {ticker.upper()} stock changed by {price_change_percent}% since yesterday"
-        
+        #print(html_content)
+
         message = Mail(from_email=MY_ADDRESS, to_emails=MY_ADDRESS, subject=subject, html_content=html_content)
+
+        print("Check email for stock price alert")
+        print("--------------------------------")
 
         try:
             response = client.send(message)
@@ -231,6 +237,7 @@ for i in range(0,len(selected_symbols)):
         print("")
 
 
+print("")
 print("********************************")
 print("       HAPPY INVESTING!")
 print("********************************")
