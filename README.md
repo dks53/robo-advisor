@@ -86,7 +86,6 @@ Store the API Key value in an environment variable called SENDGRID_API_KEY. Also
 
 ```sh
 SENDGRID_API_KEY = "________(Your API key)________" 
-
 MY_EMAIL_ADDRESS = "________(Your email address)________" 
 ```
 
