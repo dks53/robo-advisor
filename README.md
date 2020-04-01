@@ -75,8 +75,6 @@ Your program will need an API Key to issue requests to the AlphaVantage API. Get
 
 ```sh
 ALPHAVANTAGE_API_KEY = "________(Your API key)________" 
-
-example: ALPHAVANTAGE_API_KEY = "X55IRTRY70EOOESP" 
 ```
 ### Email API
 
@@ -89,12 +87,7 @@ Store the API Key value in an environment variable called SENDGRID_API_KEY. Also
 ```sh
 SENDGRID_API_KEY = "________(Your API key)________" 
 
-example: SENDGRID_API_KEY = "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" 
-
 MY_EMAIL_ADDRESS = "________(Your email address)________" 
-
-example: MY_EMAIL_ADDRESS = "dks53@georgetown.edu" 
-
 ```
 
 ## Environment setup
