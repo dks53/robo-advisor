@@ -26,7 +26,8 @@ def test_timestamp():
     Result: 2020-04-16 18:22:36
     '''
 
-def test_get_url_data():
-    sample_symbol = "TSLA"
-    parsed_response = get_url_data(sample_symbol)
-    assert parsed_response["Meta Data"]["2. Symbol"] == sample_symbol
+#def test_get_url_data():
+#    sample_symbol = "TSLA"
+#    parsed_response = get_url_data(sample_symbol)
+#    assert parsed_response["Meta Data"]["2. Symbol"] == sample_symbol
+#

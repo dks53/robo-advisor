@@ -58,11 +58,11 @@ def dict_to_list(all_stock_data):
     for date, stock_price in tsd.items():
         one_day = {
             "timestamp": date,
-            "open": stock_price["1. open"],
-            "high": stock_price["2. high"],
-            "low": stock_price["3. low"],
-            "close": stock_price["4. close"],
-            "volume": stock_price["5. volume"]
+            "open": float(stock_price["1. open"]),
+            "high": float(stock_price["2. high"]),
+            "low": float(stock_price["3. low"]),
+            "close": float(stock_price["4. close"]),
+            "volume": float(stock_price["5. volume"])
         }
         all_days.append(one_day)
 
@@ -79,19 +79,42 @@ def get_yesterday(all_days):
 def get_highs(all_days):
     high_prices = []
     for one_day in all_days:
-        day_high = int(all_days["high"])
+        day_high = one_day["high"]
         high_prices.append(day_high)
     return high_prices
 
-def get_lows():
+def get_lows(all_days):
     low_prices = []
     for one_day in all_days:
-        day_low = all_days["low"]
+        day_low = one_day["low"]
         low_prices.append(day_low)
     return low_prices
-# TODO: create CSV file function
 
-# TODO: calculations functions
+def get_recommendation(latest_close, recent_high, recent_low):
+    recommendation = "N/A"
+
+    if latest_close < (recent_low * 1.2): # If the stock's latest closing price is less than 20% above its recent low, "Buy"
+        recommendation_decision = "Buy!"
+    elif (recent_high - recent_low) > 50: # If the difference between the recent high and recent low is greater than 50, "Buy"
+        recommendation_decision = "Buy!"
+    else: # Else, "Don't Buy"
+        recommendation_decision = "Don't buy!"
+    return recommendation_decision
+
+
+def get_reco_reason(latest_close, recent_high, recent_low):
+    recommendation_reasoning = "N/A"
+
+    if latest_close < (recent_low * 1.2): # If the stock's latest closing price is less than 20% above its recent low, "Buy"
+        recommendation_reasoning = "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
+    elif (recent_high - recent_low) > 50: # If the difference between the recent high and recent low is greater than 50, "Buy"
+        recommendation_reasoning = "There is a significant gap between the recent high and low which means that it is not a volatile stock at the moment. It would be a safe investment"
+    else: # Else, "Don't Buy"
+        recommendation_reasoning = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
+    return recommendation_reasoning
+
+
+# TODO: create CSV file function
 
 if __name__ == "__main__":
 
@@ -131,40 +154,19 @@ if __name__ == "__main__":
 
         yesterday = get_yesterday(all_days)
         yesterday_close = yesterday["close"]
-        print(type(yesterday_close))
-        breakpoint()
 
         # maximum/minimum daily high/low in the last 100 days
 
         high_prices = get_highs(all_days)
         low_prices = get_lows(all_days)
-        
-        print(high_prices)
-        print(low_prices)
-        breakpoint()
 
         recent_high = max(high_prices)
         recent_low = min(low_prices)
 
         # recommendation algorithm
 
-        recommendation = "N/A"
-        recommendation_reason = "N/A"
-
-        # converting to float in order to do calculations
-        recent_high = float(recent_high)
-        recent_low = float(recent_low)
-        latest_close = float(latest_close)
-
-        if latest_close < (recent_low * 1.2): # If the stock's latest closing price is less than 20% above its recent low, "Buy"
-            recommendation = "Buy!"
-            recommendation_reason = "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
-        elif (recent_high - recent_low) > 50: # If the difference between the recent high and recent low is greater than 50, "Buy"
-            recommendation = "Buy!"
-            recommendation_reason = "There is a significant gap between the recent high and low which means that it is not a volatile stock at the moment. It would be a safe investment"
-        else: # Else, "Don't Buy"
-            recommendation = "Don't buy!"
-            recommendation_reason = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
+        recommendation_decision = get_recommendation(latest_close, recent_high, recent_low)
+        recommendation_reasoning = get_reco_reason(latest_close, recent_high, recent_low)
 
         # writing data to a csv file
 
