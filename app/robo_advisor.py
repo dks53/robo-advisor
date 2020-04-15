@@ -26,6 +26,7 @@ def to_usd(my_price):
     Example: to_usd(4000.444444)
     Returns: $ 4,000.44
     """
+
 def timestamp(current_datetime):
     datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     return f"Request at: {datetime_str}"
@@ -35,6 +36,7 @@ def timestamp(current_datetime):
     Example: timestamp(datetime().now)
     Returns: 2020-04-16 11:15:35
     """
+
 def prelim_validation(ticker):
     if len(ticker) < 5 and ticker.isalpha():
         return symbol
@@ -53,6 +55,10 @@ def user_input(all_symbols):
         exit()
     else:
         return print(f"Your entered: {selected_symbols}")
+
+# TODO: create CSV file function
+
+# TODO: calculations functions
 
 if __name__ == "__main__":
 
@@ -150,21 +156,6 @@ if __name__ == "__main__":
                     "close": tsd[date]["4. close"],
                     "volume": tsd[date]["5. volume"],
                 })
-
-        # plot graph of stock
-
-        x=[]
-        y=[]
-        for date in dates:
-            x.append(date)
-            y.append(tsd[date]["4. close"])
-
-        plot_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{ticker.upper()}_chart.html")
-
-        plotly.offline.plot({
-            "data": [go.Scatter(x=x, y=y)],
-            "layout": go.Layout(title=f"Daily Closing Price of {ticker.upper()} Stock", yaxis_title = "Price ($)", xaxis_title = "Date")
-        }, filename=plot_file_path, auto_open=True)
 
         # print results ------------------------------------------------------------------
 

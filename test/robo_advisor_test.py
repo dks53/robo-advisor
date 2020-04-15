@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime
 
-from app.robo_advisor import to_usd, timestamp
+from app.robo_advisor import to_usd, timestamp, get_url_data, prelim_validation
 
 # test to_usd
 def test_to_usd():
@@ -25,3 +25,8 @@ def test_timestamp():
     Example: datetime(2020, 4, 16, 18, 22, 36)
     Result: 2020-04-16 18:22:36
     '''
+
+def test_get_url_data():
+    sample_symbol = "TSLA"
+    parsed_response = get_url_data(sample_symbol)
+    assert parsed_response["Meta Data"]["2. Symbol"] == sample_symbol
