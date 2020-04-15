@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime
 
-from app.robo_advisor import to_usd, timestamp, get_url_data, prelim_validation
+from app.robo_advisor import to_usd, timestamp, get_url_data
 
 # test to_usd
 def test_to_usd():
