@@ -37,6 +37,18 @@ def timestamp(current_datetime):
     Returns: 2020-04-16 11:15:35
     """
 
+def prelim_validation(ticker):
+    if len(ticker) < 5 and ticker.isalpha():
+        return symbol
+    else:
+        return print (f"Are you sure you entered the correct symbol? Try again!")
+
+def get_url_data(ticker):
+    request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
+    response = requests.get(request_url) # checks whether the request for the URL succeeded or not
+    parsed_response = json.loads(response.text)
+    return parsed_response
+
 while True:
     symbol = input("Please enter the ticker symbol (e.g.: AAPL) for a stock you would like to learn about. Or, if you are done entering the stocks, hit 'enter': ")
     #symbol = "MSFT"
@@ -44,31 +56,19 @@ while True:
     if symbol == "":
         break
     else:
-        # preliminary validation checking if input is <4 characters and contains only alphabets
-        if len(symbol) < 5 and symbol.isalpha():
-            print("")
-            print("*******************************************************")
-            print(f"Looking up the internet for {symbol.upper()} stock data ...")
-            print("*******************************************************")
-            print("")
+        print("")
+        print("*******************************************************")
+        print(f"Looking up the internet for {symbol.upper()} stock data ...")
+        print("*******************************************************")
+        print("")
 
-            # loads URL to be looked up for data
-            request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}"
+        symbol = prelim_validation(symbol) # preliminary validation checking if input is <4 characters and contains only alphabets
+        
+        parsed_response = get_url_data(symbol)        
+        
+        selected_symbols.append(symbol)
+        selected_response.append(parsed_response)
 
-            response = requests.get(request_url) # checks whether the request for the URL succeeded or not
-
-            #  secondary validation to see if the stock symbol exists ~ handle response errors:
-            if "Error Message" in response.text:
-                print("OOPS, couldn't find that symbol! Please try again")
-                
-            parsed_response = json.loads(response.text)
-
-            selected_symbols.append(symbol)
-            selected_response.append(parsed_response)
-
-        else:
-            print("Are you sure you entered the correct symbol? Try again!")
-   
 print("")
 
 # if statement to make sure the user entered at least one stock.
