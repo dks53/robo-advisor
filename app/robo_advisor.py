@@ -49,6 +49,14 @@ def get_url_data(ticker):
     parsed_response = json.loads(response.text)
     return parsed_response
 
+def user_input(all_symbols):
+    if len(selected_symbols) == 0:
+        print("You didn't input a stock ticker/symbol. At least one symbol is required to run the code.")
+        exit()
+    else:
+        return print(f"Your entered: {selected_symbols}")
+
+# USER INPUT    
 while True:
     symbol = input("Please enter the ticker symbol (e.g.: AAPL) for a stock you would like to learn about. Or, if you are done entering the stocks, hit 'enter': ")
     #symbol = "MSFT"
@@ -64,28 +72,16 @@ while True:
 
         symbol = prelim_validation(symbol) # preliminary validation checking if input is <4 characters and contains only alphabets
         
-        parsed_response = get_url_data(symbol)        
+        parsed_response = get_url_data(symbol) # accesses the URL and collects the requested data for that stock.    
         
-        selected_symbols.append(symbol)
-        selected_response.append(parsed_response)
+        selected_symbols.append(symbol) # adds stock symbol to a list of stock symbols requested by the user
+        selected_response.append(parsed_response) # adds stock info to a list of all the info of stocks requested by the user
 
-print("")
-
-# if statement to make sure the user entered at least one stock.
-if len(selected_symbols) == 0:
-    print("You didn't input a stock ticker/symbol. At least one symbol is required to run the code.")
-    print("")
-    exit()
-else:
-    print(f"Your entered: {selected_symbols}")
+# OUTPUT: Summary of user input
+user_input(selected_symbols) #> You entered: ["AAPL, "GOOG", "MSFT", "TSLA"]
 
 for i in range(0,len(selected_symbols)):
     ticker = selected_symbols[i]
-    # Date/time of request
-    
-    DateTime = datetime.now()
-
-    request_at = (f"{DateTime.year}-{DateTime.month}-{DateTime.day} {DateTime.hour}:{DateTime.minute}:{DateTime.second}")
 
     # variable holding latest refreshed date
     latest_refreshed = selected_response[i]["Meta Data"]["3. Last Refreshed"]
