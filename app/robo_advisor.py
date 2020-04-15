@@ -6,8 +6,6 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 import csv
-import plotly
-import plotly.graph_objs as go
 
 load_dotenv()
 
@@ -37,25 +35,60 @@ def timestamp(current_datetime):
     Returns: 2020-04-16 11:15:35
     """
 
-def prelim_validation(ticker):
-    if len(ticker) < 5 and ticker.isalpha():
-        return symbol
-    else:
-        return print (f"Are you sure you entered the correct symbol? Try again!")
-
 def get_url_data(ticker):
     request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
     response = requests.get(request_url) # checks whether the request for the URL succeeded or not
-    parsed_response = json.loads(response.text)
-    return parsed_response
+    if "Error Message" in response.text:
+        print("OOPS, couldn't find that symbol! Please try running the program again!")
+        return exit()
+    else:
+        parsed_response = json.loads(response.text)
+        return parsed_response
 
 def user_input(all_symbols):
     if len(selected_symbols) == 0:
-        print("You didn't input a stock ticker/symbol. At least one symbol is required to run the code.")
-        exit()
+        feedback = "You didn't input a stock ticker/symbol. At least one symbol is required to run this program."
     else:
-        return print(f"Your entered: {selected_symbols}")
+        feedback = f"Your entered: {selected_symbols}"
+    return feedback
 
+def dict_to_list(all_stock_data):
+    tsd = all_stock_data["Time Series (Daily)"]
+    all_days = []
+    for date, stock_price in tsd.items():
+        one_day = {
+            "timestamp": date,
+            "open": stock_price["1. open"],
+            "high": stock_price["2. high"],
+            "low": stock_price["3. low"],
+            "close": stock_price["4. close"],
+            "volume": stock_price["5. volume"]
+        }
+        all_days.append(one_day)
+
+    return all_days
+
+def get_latest_day(all_days):
+    latest_day = all_days[0]
+    return latest_day
+
+def get_yesterday(all_days):
+    yesterday = all_days[1]
+    return yesterday
+
+def get_highs(all_days):
+    high_prices = []
+    for one_day in all_days:
+        day_high = int(all_days["high"])
+        high_prices.append(day_high)
+    return high_prices
+
+def get_lows():
+    low_prices = []
+    for one_day in all_days:
+        day_low = all_days["low"]
+        low_prices.append(day_low)
+    return low_prices
 # TODO: create CSV file function
 
 # TODO: calculations functions
@@ -76,43 +109,39 @@ if __name__ == "__main__":
             print("*******************************************************")
             print("")
 
-            symbol = prelim_validation(symbol) # preliminary validation checking if input is <4 characters and contains only alphabets
-
             parsed_response = get_url_data(symbol) # accesses the URL and collects the requested data for that stock.    
 
             selected_symbols.append(symbol) # adds stock symbol to a list of stock symbols requested by the user
             selected_response.append(parsed_response) # adds stock info to a list of all the info of stocks requested by the user
 
     # OUTPUT: Summary of user input
-    user_input(selected_symbols) #> You entered: ["AAPL, "GOOG", "MSFT", "TSLA"]
+    feedback = user_input(selected_symbols) #> You entered: ["AAPL, "GOOG", "MSFT", "TSLA"]
+    print(feedback)
 
     for i in range(0,len(selected_symbols)):
         ticker = selected_symbols[i]
 
         # variable holding latest refreshed date
         latest_refreshed = selected_response[i]["Meta Data"]["3. Last Refreshed"]
+        
+        all_days = dict_to_list(selected_response[i])
 
-        tsd = selected_response[i]["Time Series (Daily)"]
-        #print(tsd)
+        latest_day = get_latest_day(all_days)
+        latest_close = latest_day["close"]
 
-        # storing the most recent date in a variable
-        dates = list(tsd.keys())
-        latest_day = dates[0]
-        yesterday = dates[1]
-
-        # closing price for latest date
-        latest_close = tsd[latest_day]["4. close"]
-        yesterday_close = tsd[yesterday]["4. close"]
+        yesterday = get_yesterday(all_days)
+        yesterday_close = yesterday["close"]
+        print(type(yesterday_close))
+        breakpoint()
 
         # maximum/minimum daily high/low in the last 100 days
-        high_prices = []
-        low_prices = []
 
-        for date in dates:
-            day_high = tsd[date]["2. high"]
-            high_prices.append(day_high)
-            day_low = tsd[date]["3. low"]
-            low_prices.append(day_low)
+        high_prices = get_highs(all_days)
+        low_prices = get_lows(all_days)
+        
+        print(high_prices)
+        print(low_prices)
+        breakpoint()
 
         recent_high = max(high_prices)
         recent_low = min(low_prices)
@@ -163,11 +192,9 @@ if __name__ == "__main__":
         print("--------------------------------")
         print("SELECTED SYMBOL: ", ticker.upper())
         print("--------------------------------")
-
         print("REQUESTING STOCK MARKET DATA...")
         print(timestamp(datetime.now()))
         print("--------------------------------")
-
         print(f"LATEST DAY   : {latest_refreshed}")
         print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
         print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
@@ -176,16 +203,12 @@ if __name__ == "__main__":
         print(f"RECOMMENDATION : {recommendation}")
         print("")
         print(f"RECOMMENDATION REASON: {recommendation_reason}")
-
         print("--------------------------------")
         print("WRITING DATA TO CSV FILE...")
         print(csv_file_path)
         print("--------------------------------")
-        print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
-        print("--------------------------------")
-
-    print("")
-    print("********************************")
-    print("       HAPPY INVESTING!")
-    print("********************************")
-    print("")
+        print("")
+        print("********************************")
+        print("       HAPPY INVESTING!")
+        print("********************************")
+        print("")

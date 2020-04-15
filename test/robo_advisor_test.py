@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime
 
-from app.robo_advisor import to_usd, timestamp, get_url_data
+from app.robo_advisor import to_usd, timestamp, get_url_data, user_input
 
 # test to_usd
 def test_to_usd():
@@ -30,3 +30,7 @@ def test_get_url_data():
     sample_symbol = "TSLA"
     parsed_response = get_url_data(sample_symbol)
     assert parsed_response["Meta Data"]["2. Symbol"] == sample_symbol
+
+#def test_user_input():
+#    user_input(selected_symbols)
+#    assert print("You didn't input a stock ticker/symbol. At least one symbol is required to run this program.")
