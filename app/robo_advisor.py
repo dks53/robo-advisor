@@ -44,6 +44,13 @@ def get_url_data(ticker):
     else:
         parsed_response = json.loads(response.text)
         return parsed_response
+    """
+    API request logic - uses the API to request a web URL and returns data to be used in the rest of the model.
+    Source: "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}
+    Param: ticker for e.g.: MSFT or AAPL
+    Example: get_url(MSFT)
+    Returns: a dictionary called parsed_response which holds all the information available about the given stock.
+    """
 
 def user_input(all_symbols):
     if len(selected_symbols) == 0:
@@ -51,6 +58,15 @@ def user_input(all_symbols):
     else:
         feedback = f"Your entered: {selected_symbols}"
     return feedback
+    """
+    Checks to see if the user has not entered a stock to be evaluated. Returns the selected stocks or returns an alert message. 
+    Param: selected_symbols for e.g.: ['MSFT','AAPL','TSLA] OR 
+           no symbols selected for e.g.: []
+    Example: get_url(['MSFT','AAPL','TSLA']) OR 
+             get_url([])
+    Returns: You entered:['MSFT','AAPL','TSLA] OR 
+             You didn't input a stock ticker/symbol. At least one symbol is required to run this program.
+    """    
 
 def dict_to_list(all_stock_data):
     tsd = all_stock_data["Time Series (Daily)"]
@@ -67,16 +83,34 @@ def dict_to_list(all_stock_data):
         all_days.append(one_day)
 
     return all_days
-    # https://www.geeksforgeeks.org/python-convert-dictionary-to-list-of-tuples/
-    # https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/notes/python/datatypes/dictionaries.md
+    '''
+    Converts the dictionary with all stock data into a list so that it can be used more efficiently in the code
+    Source: "https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/notes/python/datatypes/dictionaries.md"
+    Source: "https://www.geeksforgeeks.org/python-convert-dictionary-to-list-of-tuples/"
+    Param: selected_response[i] which holds all the stock data for a single given stock in the loop.
+    Example: dict_to_list(selected_response[0])
+    Returns: all_days list with all the stock data sorted by date
+    '''
 
 def get_latest_day(all_days):
     latest_day = all_days[0]
     return latest_day
+    '''
+    Uses the all_days list and pulls the 1st element of the list [0], which contains the latest_day data
+    Param: all_days list which holds all the stock data for a single given stock in the loop.
+    Example: get_latest_day(all_days)
+    Returns: {'timestamp': '2020-04-14', 'open': '698.9700', 'high': '741.8800', 'low': '692.4300', 'close': '709.8900', 'volume': '29685359'}
+    '''    
 
 def get_yesterday(all_days):
     yesterday = all_days[1]
     return yesterday
+    '''
+    Uses the all_days list and pulls the 2nd element of the list [1], which contains the data on the day before the latest day
+    Param: all_days list which holds all the stock data for a single given stock in the loop.
+    Example: get_yesterday(all_days)
+    Returns: {'timestamp': '2020-04-13', 'open': '590.1600', 'high': '652.0000', 'low': '580.5300', 'close': '650.9500', 'volume': '22475421'}
+    '''
 
 def get_highs(all_days):
     high_prices = []
@@ -84,6 +118,12 @@ def get_highs(all_days):
         day_high = one_day["high"]
         high_prices.append(day_high)
     return high_prices
+    '''
+    Uses the all_days list and creates a list with all the daily highs of the given stock
+    Param: all_days list which holds all the stock data for a single given stock in the loop.
+    Example: get_highs(all_days)
+    Returns: list of all the "high" price values available for that stock
+    '''       
 
 def get_lows(all_days):
     low_prices = []
@@ -91,6 +131,12 @@ def get_lows(all_days):
         day_low = one_day["low"]
         low_prices.append(day_low)
     return low_prices
+    '''
+    Uses the all_days list and creates a list with all the daily lows of the given stock
+    Param: all_days list which holds all the stock data for a single given stock in the loop.
+    Example: get_lows(all_days)
+    Returns: list of all the "low" price values available for that stock
+    '''  
 
 def get_recommendation(latest_close, recent_high, recent_low):
     recommendation = "N/A"
@@ -102,6 +148,12 @@ def get_recommendation(latest_close, recent_high, recent_low):
     else: # Else, "Don't Buy"
         recommendation_decision = "Don't buy!"
     return recommendation_decision
+    '''
+    Uses various values from the data such as latest closing price, recent high, recent low to run a calculation
+    Param: latest_close, recent_high, recent_low
+    Example: get_recommendation(47.00, 60.00, 40.00)
+    Returns: recommendation_decision = "Buy!"
+    '''  
 
 def get_reco_reason(latest_close, recent_high, recent_low):
     recommendation_reasoning = "N/A"
@@ -113,6 +165,12 @@ def get_reco_reason(latest_close, recent_high, recent_low):
     else: # Else, "Don't Buy"
         recommendation_reasoning = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
     return recommendation_reasoning
+    '''
+    Uses various values from the data such as latest closing price, recent high, recent low to run a calculation
+    Param: latest_close, recent_high, recent_low
+    Example: get_reco_reason(47.00, 60.00, 40.00)
+    Returns: recommendation_reasoning = "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon.!"
+    '''  
 
 def write_to_csv(csv_file_path, all_days):
     csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
@@ -124,6 +182,12 @@ def write_to_csv(csv_file_path, all_days):
         # loop through all data to write into different rows
         for one_day in all_days:
             writer.writerow(one_day)
+        '''
+        Takes the pre-determined file path and all stock data and organizes it into individual rows, written onto a csv file.
+        Param: csv_file_path, all_days
+        Example: write_to_csv(csv_file_path, all_days)
+        Returns: a CSV file saved in the data folder.
+        '''  
                     
 if __name__ == "__main__":
 
