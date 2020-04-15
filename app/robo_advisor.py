@@ -8,13 +8,15 @@ from datetime import datetime
 import csv
 import plotly
 import plotly.graph_objs as go
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-
-## ----------------------------------------------------------------------------------------------
 
 load_dotenv()
 
+# variables, empty lists etc.
+API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "demo")
+selected_symbols = [] # list of the symbols the user wishes to learn about
+selected_response = [] # list consisting of all the data about a given symbol from the database
+
+# function definitions
 def to_usd(my_price):
     return f"$ {my_price:,.2f}" #> $12,000.71
     """
@@ -25,11 +27,15 @@ def to_usd(my_price):
     Returns: $4,000.44
     """
 
-# variables in the URL
-API_KEY = os.getenv("ALPHAVANTAGE_API_KEY", default = "OOPS") # X55IRTRY70EOOESP
-
-selected_symbols = [] # list of the symbols the user wishes to learn about
-selected_response = [] # list consisting of all the data about a given symbol from the database
+def timestamp(current_datetime):
+    datetime_str = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    return f"Request at: {datetime_str}"
+    """
+    Formats and returns the current date/time
+    Param: current_datetime takes information from the datetime module
+    Example: timestamp(datetime().now)
+    Returns: 2020-04-16 11:15:35
+    """
 
 while True:
     symbol = input("Please enter the ticker symbol (e.g.: AAPL) for a stock you would like to learn about. Or, if you are done entering the stocks, hit 'enter': ")
@@ -48,10 +54,6 @@ while True:
 
             # loads URL to be looked up for data
             request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={API_KEY}"
-            #print("--------------------------------------------------------------------------------------------------------")
-            #print("URL:", request_url)
-            #print("--------------------------------------------------------------------------------------------------------")
-            #print("")
 
             response = requests.get(request_url) # checks whether the request for the URL succeeded or not
 
@@ -64,13 +66,9 @@ while True:
             selected_symbols.append(symbol)
             selected_response.append(parsed_response)
 
-            #print(selected_symbols)
-            #print(selected_response)
-
         else:
             print("Are you sure you entered the correct symbol? Try again!")
-
-      
+   
 print("")
 
 # if statement to make sure the user entered at least one stock.
@@ -80,8 +78,6 @@ if len(selected_symbols) == 0:
     exit()
 else:
     print(f"Your entered: {selected_symbols}")
-
-#breakpoint()
 
 for i in range(0,len(selected_symbols)):
     ticker = selected_symbols[i]
@@ -182,7 +178,7 @@ for i in range(0,len(selected_symbols)):
     print("--------------------------------")
 
     print("REQUESTING STOCK MARKET DATA...")
-    print(f"REQUEST AT: {request_at}")
+    print(timestamp(datetime.now()))
     print("--------------------------------")
 
     print(f"LATEST DAY   : {latest_refreshed}")
@@ -200,42 +196,6 @@ for i in range(0,len(selected_symbols)):
     print("--------------------------------")
     print(f"PLOTTING GRAPH FOR {ticker.upper()} STOCK")
     print("--------------------------------")
-
-    # calculation for percentage change in closing price of stock on latest day and the day before
-    
-    price_change = (float(latest_close)-float(yesterday_close))/float(yesterday_close)
-    #print(price_change)
-    price_change_percent = round((price_change * 100),2)
-    #print(price_change_percent)
-    price_change = abs(price_change)
-    #print(price_change)
-
-    # condition to determine whether or not to send the email. If change is > 5%, send email, otherwise break.
-    if (price_change > 0.05):
-        SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
-        #print(SENDGRID_API_KEY)
-        MY_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
-        #print(MY_ADDRESS)
-        client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
-
-        subject = f"{symbol} Stock Price Movement Alert"
-
-        html_content = f"The {ticker.upper()} stock changed by {price_change_percent}% since yesterday"
-        #print(html_content)
-
-        message = Mail(from_email=MY_ADDRESS, to_emails=MY_ADDRESS, subject=subject, html_content=html_content)
-
-        print("Check email for stock price alert")
-        print("--------------------------------")
-
-        try:
-            response = client.send(message)
-
-        except Exception as e:
-            print("OOPS", e.message)
-    else:
-        print("")
-
 
 print("")
 print("********************************")

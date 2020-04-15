@@ -113,5 +113,5 @@ pip install sendgrid==6.0.5
 Once you have the entire program set-up, from within the virtual environment, demonstrate your ability to run the Python script from the command-line:
 
 ```sh
-python app/robo-advisor.py
+python app/robo_advisor.py
 ```
