@@ -1,0 +1,27 @@
+# test/robo_advisor_test.py
+
+import pytest
+import os
+import requests
+import json
+from datetime import datetime
+
+from app.robo_advisor import to_usd, timestamp
+
+# test to_usd
+def test_to_usd():
+    result = to_usd(13673.239020)
+    assert result == "$ 13,673.24"
+    '''
+    Tests the to_usd function for formatting - displays the $ sign, rounds to and displays 2 decimals and inserts thousands separator.
+    '''
+
+# test timestamp
+def test_timestamp():
+    datetime_example = datetime(2020, 4, 16, 18, 22, 36)
+    assert timestamp(datetime_example) == "Request at: 2020-04-16 18:22:36"
+    '''
+    Tests the timestamp function by checking if a easily understandable date format is printed.
+    Example: datetime(2020, 4, 16, 18, 22, 36)
+    Result: 2020-04-16 18:22:36
+    '''
