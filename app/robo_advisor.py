@@ -81,7 +81,7 @@ def dict_to_list(all_stock_data):
             "volume": float(stock_price["5. volume"])
         }
         all_days.append(one_day)
-
+    # float() ensures that these values can be used later on for calculations. Without float they would be <str>.
     return all_days
     '''
     Converts the dictionary with all stock data into a list so that it can be used more efficiently in the code
