@@ -67,6 +67,8 @@ def dict_to_list(all_stock_data):
         all_days.append(one_day)
 
     return all_days
+    # https://www.geeksforgeeks.org/python-convert-dictionary-to-list-of-tuples/
+    # https://github.com/prof-rossetti/georgetown-opim-243-201901/blob/master/notes/python/datatypes/dictionaries.md
 
 def get_latest_day(all_days):
     latest_day = all_days[0]
@@ -101,7 +103,6 @@ def get_recommendation(latest_close, recent_high, recent_low):
         recommendation_decision = "Don't buy!"
     return recommendation_decision
 
-
 def get_reco_reason(latest_close, recent_high, recent_low):
     recommendation_reasoning = "N/A"
 
@@ -113,9 +114,17 @@ def get_reco_reason(latest_close, recent_high, recent_low):
         recommendation_reasoning = "It's risky to buy this stock as the moment. Wait until the market becomes more predictable."
     return recommendation_reasoning
 
+def write_to_csv(csv_file_path, all_days):
+    csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 
-# TODO: create CSV file function
+    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader() # uses fieldnames set above
 
+        # loop through all data to write into different rows
+        for one_day in all_days:
+            writer.writerow(one_day)
+                    
 if __name__ == "__main__":
 
 # USER INPUT    
@@ -141,17 +150,21 @@ if __name__ == "__main__":
     feedback = user_input(selected_symbols) #> You entered: ["AAPL, "GOOG", "MSFT", "TSLA"]
     print(feedback)
 
+# PROCESSING
     for i in range(0,len(selected_symbols)):
         ticker = selected_symbols[i]
 
         # variable holding latest refreshed date
         latest_refreshed = selected_response[i]["Meta Data"]["3. Last Refreshed"]
         
+        # invoking the dict_to_list function
         all_days = dict_to_list(selected_response[i])
 
+        # invoking the get_latest_day function and determine the latest_close
         latest_day = get_latest_day(all_days)
         latest_close = latest_day["close"]
-
+        
+        # invoking the get_latest_day function and determine the latest_close
         yesterday = get_yesterday(all_days)
         yesterday_close = yesterday["close"]
 
@@ -168,25 +181,13 @@ if __name__ == "__main__":
         recommendation_decision = get_recommendation(latest_close, recent_high, recent_low)
         recommendation_reasoning = get_reco_reason(latest_close, recent_high, recent_low)
 
+# OUTPUT
+
         # writing data to a csv file
 
         csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", f"{ticker.upper()}_prices.csv")
-        csv_headers = ["timestamp", "open", "high", "low", "close", "volume"]
 
-        with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-            writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-            writer.writeheader() # uses fieldnames set above
-
-            # loop through all data to write into different rows
-            for date in dates:
-                writer.writerow({
-                    "timestamp": date,
-                    "open": tsd[date]["1. open"],
-                    "high": tsd[date]["2. high"],
-                    "low": tsd[date]["3. low"],
-                    "close": tsd[date]["4. close"],
-                    "volume": tsd[date]["5. volume"],
-                })
+        write_to_csv(csv_file_path,all_days)
 
         # print results ------------------------------------------------------------------
 
@@ -198,13 +199,13 @@ if __name__ == "__main__":
         print(timestamp(datetime.now()))
         print("--------------------------------")
         print(f"LATEST DAY   : {latest_refreshed}")
-        print(f"LATEST CLOSE : {to_usd(float(latest_close))}")
-        print(f"RECENT HIGH  : {to_usd(float(recent_high))}")
-        print(f"RECENT LOW   : {to_usd(float(recent_low))}")
+        print(f"LATEST CLOSE : {to_usd(latest_close)}")
+        print(f"RECENT HIGH  : {to_usd(recent_high)}")
+        print(f"RECENT LOW   : {to_usd(recent_low)}")
         print("--------------------------------")
-        print(f"RECOMMENDATION : {recommendation}")
+        print(f"RECOMMENDATION : {recommendation_decision}")
         print("")
-        print(f"RECOMMENDATION REASON: {recommendation_reason}")
+        print(f"RECOMMENDATION REASON: {recommendation_reasoning}")
         print("--------------------------------")
         print("WRITING DATA TO CSV FILE...")
         print(csv_file_path)
