@@ -33,10 +33,6 @@ def test_get_url_data():
     stock_data = get_url_data(ticker)
     assert stock_data["Meta Data"]["2. Symbol"] == ticker
 
-    ticker = "TSLA"
-    stock_data = get_url_data(ticker)
-    assert stock_data["Meta Data"]["2. Symbol"] == ticker
-
 # test user_input
 def test_user_input():
     selected_symbols = []
