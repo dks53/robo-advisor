@@ -80,14 +80,14 @@ def test_dict_to_list():
         }
         stock_data_list.append(one_day)
 
-        dict_to_list(stock_data_dict)
-
-        assert stock_data_list == [
+        stock_data_list = [
             {'timestamp': '2020-04-16', 'open': 716.94, 'high': 759.45, 'low': 706.715, 'close': 745.21, 'volume': 19748358.0}, 
             {'timestamp': '2020-04-15', 'open': 742.0, 'high': 753.13, 'low': 710.0, 'close': 729.83, 'volume': 23577001.0}, 
             {'timestamp': '2020-04-14', 'open': 698.97, 'high': 741.88, 'low': 692.43, 'close': 709.89, 'volume': 30576511.0}, 
             {'timestamp': '2020-04-13', 'open': 590.16, 'high': 652.0, 'low': 580.53, 'close': 650.95, 'volume': 22475421.0}
         ]
+
+        assert dict_to_list(stock_data_dict) == stock_data_list
 
 # test get_latest_day
 def test_get_latest_day():
