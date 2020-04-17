@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime
 
-from app.robo_advisor import to_usd, timestamp, get_url_data, user_input, get_latest_day, get_yesterday, get_highs, get_lows, get_recommendation, get_reco_reason
+from app.robo_advisor import to_usd, timestamp, get_url_data, user_input, get_latest_day, get_yesterday, get_highs, get_lows, get_recommendation, get_reco_reason, write_to_csv
 
 # test to_usd
 def test_to_usd():
@@ -124,5 +124,17 @@ def test_get_reco_reason():
     recommendation_reasoning = get_reco_reason(latest_close_example,recent_high_example,recent_low_example)
     assert recommendation_reasoning == "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
 
-# TODO
-#def test_write_to_csv():
+# test write_to_csv
+def test_write_to_csv():
+    
+    sample_csv_file_path = os.path.join(os.path.dirname(__file__), "..", "test/test_csv", f"testing_prices.csv")
+
+    all_days_example = [
+        {'timestamp': '2020-04-16', 'open': 716.94, 'high': 759.45, 'low': 706.715, 'close': 745.21, 'volume': 19748358.0}, 
+        {'timestamp': '2020-04-15', 'open': 742.0, 'high': 753.13, 'low': 710.0, 'close': 729.83, 'volume': 23577001.0}, 
+        {'timestamp': '2020-04-14', 'open': 698.97, 'high': 741.88, 'low': 692.43, 'close': 709.89, 'volume': 30576511.0}, 
+        {'timestamp': '2020-04-13', 'open': 590.16, 'high': 652.0, 'low': 580.53, 'close': 650.95, 'volume': 22475421.0}
+    ]
+
+    write_to_csv(sample_csv_file_path,all_days_example)
+    
