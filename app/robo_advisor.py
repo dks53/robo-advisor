@@ -224,6 +224,18 @@ if __name__ == "__main__":
         # invoking the dict_to_list function
         all_days = dict_to_list(selected_response[i])
 
+        print("SELECTED RESPONSE")
+        print("")
+        print(selected_response[i])
+        print("")
+        print("ALL DAYS")
+        print("")
+        print(all_days)
+        print("")
+        breakpoint()
+        
+
+
         # invoking the get_latest_day function and determine the latest_close
         latest_day = get_latest_day(all_days)
         latest_close = latest_day["close"]
