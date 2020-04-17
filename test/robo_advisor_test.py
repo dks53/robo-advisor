@@ -6,7 +6,8 @@ import requests
 import json
 from datetime import datetime
 
-from app.robo_advisor import to_usd, timestamp, get_url_data, user_input, get_latest_day, get_yesterday, get_highs, get_lows, get_recommendation, get_reco_reason, write_to_csv, dict_to_list
+from app.robo_advisor import to_usd, timestamp, get_url_data, user_input, get_latest_day, get_yesterday, get_highs 
+from app.robo_advisor import get_lows, get_recommendation, get_reco_reason, write_to_csv, dict_to_list
 
 # test to_usd
 def test_to_usd():
@@ -32,6 +33,12 @@ def test_get_url_data():
     ticker = "MSFT"
     stock_data = get_url_data(ticker)
     assert stock_data["Meta Data"]["2. Symbol"] == ticker
+    '''
+    Tests the get URL function to see if a user selected stock exists on the API.
+    Example: get_url_data("MSFT")
+    Result: Dictionary with key value pairs including all the data from the API about the given stock.
+    This test compares the API's "Meta Stock" and "Symbol" Keys and the corresponding stock symbol and passes if they are the same.
+    '''
 
 # test user_input
 def test_user_input():
@@ -89,6 +96,26 @@ def test_dict_to_list():
 
         assert dict_to_list(stock_data_dict) == stock_data_list
 
+    '''
+    Tests the dict_to_list function so that the list can be used by other functions to perform calculations and make recommendations.
+    Example: stock_data_dict = 
+            '2020-04-16': {
+                '1. open': '716.9400', 
+                '2. high': '759.4500', 
+                '3. low': '706.7150', 
+                '4. close': '745.2100', 
+                '5. volume': '19748358'
+                }
+    Result: [
+        {'timestamp': '2020-04-16', 
+        'open': 716.94, 
+        'high': 759.45, 
+        'low': 706.715, 
+        'close': 745.21, 
+        'volume': 19748358.0},
+        ]
+    '''
+
 # test get_latest_day
 def test_get_latest_day():
     all_days_example = [
@@ -100,6 +127,12 @@ def test_get_latest_day():
 
     latest_day = get_latest_day(all_days_example)
     assert latest_day == {'timestamp': '2020-04-16', 'open': 716.94, 'high': 759.45, 'low': 706.715, 'close': 745.21, 'volume': 19748358.0}
+
+    '''
+    Tests the get_latest_day function which takes the first item in the stock data list and stores it in the variable "latest_day" 
+    Example: feedback = get_latest_day(all_days)
+    Result: {'timestamp': '2020-04-16', 'open': 716.94, 'high': 759.45, 'low': 706.715, 'close': 745.21, 'volume': 19748358.0}
+    '''
 
 # test get_yesterday
 def test_get_yesterday():
@@ -113,6 +146,11 @@ def test_get_yesterday():
     yesterday = get_yesterday(all_days_example)
     assert yesterday == {'timestamp': '2020-04-15', 'open': 742.0, 'high': 753.13, 'low': 710.0, 'close': 729.83, 'volume': 23577001.0}
 
+    '''
+    Tests the get_yesterday function which takes the second item in the stock data list and stores it in the variable "yesterday" 
+    Example: feedback = get_yesterday(all_days)
+    Result: {'timestamp': '2020-04-15', 'open': 742.0, 'high': 753.13, 'low': 710.0, 'close': 729.83, 'volume': 23577001.0}
+    '''
 # test get_highs
 def test_get_highs():
     all_days_example = [
@@ -129,6 +167,13 @@ def test_get_highs():
         high_prices_list.append(one_day_high)
     
     assert high_prices_list == [759.45, 753.13, 741.88, 652.0]
+
+    '''
+    Tests the get_highs function which loops through the stock data list and 
+    stores all the "high" prices in the list "high_prices_list"  
+    Example: high_prices_list = get_highs(all_days)
+    Result: [759.45, 753.13, 741.88, 652.0]
+    '''
 
 # test get_lows
 def test_get_lows():
@@ -147,6 +192,13 @@ def test_get_lows():
     
     assert low_prices_list == [706.715, 710.0, 692.43, 580.53]
 
+    '''
+    Tests the get_lows function which loops through the stock data list and 
+    stores all the "low" prices in the list "low_prices_list"  
+    Example: low_prices_list = get_lows(all_days)
+    Result: [706.715, 710.0, 692.43, 580.53]
+    '''
+
 # test get_recommendation
 def test_get_recommendation():
     latest_close_example = 45
@@ -156,6 +208,13 @@ def test_get_recommendation():
     recommendation_decision = get_recommendation(latest_close_example,recent_high_example,recent_low_example)
     assert recommendation_decision == "Buy!"
 
+    '''
+    Tests the get_recommendation function which takes the latest_close, recent_high and recent_low values and 
+    runs through calculations to make a recommendation on whether or not to buy the stock
+    Example: get_recommendation(45, 60, 40)
+    Result: "Buy!"
+    '''
+
 # test get_reco_reason
 def test_get_reco_reason():
     latest_close_example = 45
@@ -164,6 +223,13 @@ def test_get_reco_reason():
 
     recommendation_reasoning = get_reco_reason(latest_close_example,recent_high_example,recent_low_example)
     assert recommendation_reasoning == "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
+
+    '''
+    Tests the get_recommendation function which takes the latest_close, recent_high and recent_low values and 
+    runs through calculations to make a recommendation on whether or not to buy the stock
+    Example: get_reco_reason(45, 60, 40)
+    Result: "The stock's latest closing price is less than 20% above its recent low. Prices are likely to go up soon."
+    '''
 
 # test write_to_csv
 def test_write_to_csv():
@@ -179,3 +245,9 @@ def test_write_to_csv():
 
     write_to_csv(sample_csv_file_path,all_days_example)
     
+    '''
+    Tests the write_to_csv function which takes the pre-decided file path and list of all stock data for a given 
+    stock and sorts it into individual rows of a csv file, and saves it in the test_csv folder.
+    Example: write_to_csv(csv_file_path, all_days)
+    Result: Writes the csv file to the test_csv file.
+    '''
